@@ -1,4 +1,4 @@
-import type { ApplicationRecord, RegisterColumn, RegisterDefinition, RecordType, SenasaRow } from "./types";
+import type { ApplicationRecord, Establishment, RegisterColumn, RegisterDefinition, RecordType, SenasaRow } from "./types";
 
 const metadata: RegisterColumn[] = [
   { key: "recordedAt", label: "Fecha de carga" },
@@ -88,6 +88,32 @@ export const mockSenasaRows: SenasaRow[] = [
   row("r6-2", 6, "2026-09-09", "Pimiento", "Carla Ruiz", { lotSurface: "L-202 · 0,8 ha", cropVariety: "Pimiento California", date: "09/09/2026", issue: "Trips", product: "Producto demo C", activeIngredient: "Sustancia demo", appliedDose: "180 ml/ha", estimatedHarvest: "23/09/2026", machine: "Pulverizadora", responsible: "Carla Ruiz", observations: "Aplicación al amanecer" }),
   row("r7-1", 7, "2026-09-01", "", "Lucía Pereyra", { product: "Producto demo A", activeIngredient: "Sustancia demo", purchaseDate: "01/09/2026", quantity: "20 l", expirationDate: "01/09/2028" }),
 ];
+
+const yesNo = (value: boolean | null) => value === null ? "" : value ? "Sí" : "No";
+
+export function establishmentToRegister1(establishment: Establishment): SenasaRow {
+  const date = (establishment.updated_at || new Date().toISOString()).slice(0, 10);
+  return {
+    id: `establishment-${establishment.id}`, recordType: 1, date, crop: "",
+    responsible: establishment.bpa_responsible || "Sin identificar", renspa: establishment.renspa,
+    establishment: establishment.name,
+    values: {
+      establishment: establishment.name, renspa: establishment.renspa, address: establishment.address,
+      locality: establishment.locality, province: establishment.province, ownerPhone: establishment.owner_phone,
+      ownerPhoneType: establishment.owner_phone_type, email: establishment.email, managerPhone: establishment.manager_phone,
+      managerPhoneType: establishment.manager_phone_type, managerAddress: establishment.manager_address,
+      bpaResponsible: establishment.bpa_responsible, bpaAddress: establishment.bpa_address,
+      bpaLocality: establishment.bpa_locality, bpaPhone: establishment.bpa_phone,
+      bpaPhoneType: establishment.bpa_phone_type, bpaEmail: establishment.bpa_email,
+      mainProducts: establishment.main_products, secondaryProducts: establishment.secondary_products,
+      seniority: establishment.seniority, association: establishment.association, memberNumber: establishment.member_number,
+      wholesaleMarket: yesNo(establishment.wholesale_market), privateCompany: yesNo(establishment.private_company),
+      ownTransport: yesNo(establishment.own_transport), packingShed: yesNo(establishment.packing_shed),
+      observations: establishment.observations, recordedAt: date.split("-").reverse().join("/"),
+      operatorName: establishment.bpa_responsible,
+    },
+  };
+}
 
 export function applicationToRegister6(record: ApplicationRecord): SenasaRow {
   const date = record.application_date || record.created_at.slice(0, 10);

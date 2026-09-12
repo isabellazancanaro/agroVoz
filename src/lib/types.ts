@@ -65,5 +65,35 @@ export type RegisterDefinition = {
   sections?: { title: string; columns: RegisterColumn[] }[];
 };
 
-export type Establishment = { id: string; name: string; renspa: string; locality: string | null; province: string | null };
+export type Establishment = {
+  id: string;
+  name: string;
+  renspa: string;
+  address: string | null;
+  locality: string | null;
+  province: string | null;
+  owner_phone: string | null;
+  owner_phone_type: string | null;
+  email: string | null;
+  manager_phone: string | null;
+  manager_phone_type: string | null;
+  manager_address: string | null;
+  bpa_responsible: string | null;
+  bpa_address: string | null;
+  bpa_locality: string | null;
+  bpa_phone: string | null;
+  bpa_phone_type: string | null;
+  bpa_email: string | null;
+  main_products: string | null;
+  secondary_products: string | null;
+  seniority: string | null;
+  association: string | null;
+  member_number: string | null;
+  wholesale_market: boolean | null;
+  private_company: boolean | null;
+  own_transport: boolean | null;
+  packing_shed: boolean | null;
+  observations: string | null;
+  updated_at: string | null;
+};
 export type Operator = { id: string; name: string; phone: string };

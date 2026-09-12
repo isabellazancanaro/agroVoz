@@ -2,7 +2,7 @@
 
 AgroVoz es un MVP que transforma notas de voz enviadas por WhatsApp en registros agrícolas estructurados, revisables y exportables. Su objetivo es simplificar la carga de las planillas de Buenas Prácticas Agrícolas (BPA) utilizadas en la actividad frutihortícola, evitando que el operario tenga que completar formularios extensos mientras trabaja en el campo.
 
-> Estado del producto: MVP funcional para demostración. El Registro 6 es el único habilitado para recibir datos reales por WhatsApp. Los Registros 1, 2, 3, 4, 5 y 7 se muestran con información demostrativa.
+> Estado del producto: MVP funcional para demostración. El Registro 6 recibe datos reales por WhatsApp. El Registro 1 se administra como ficha única de cada establecimiento; los Registros 2, 3, 4, 5 y 7 conservan información demostrativa.
 
 ## Resumen ejecutivo
 
@@ -105,7 +105,8 @@ La cuenta Trial de Twilio Sandbox utilizada en este MVP no habilita los selector
 - Filtros específicos según los campos disponibles en cada registro.
 - Filtro por nombre del establecimiento en todos los registros; cada fila conserva internamente su RENSPA.
 - Solicitud automática por WhatsApp de los datos obligatorios que la IA no haya podido completar.
-- Exportación de cada planilla en CSV y PDF.
+- Exportación PDF conjunta: Registro 1 primero y registro operativo a continuación.
+- Exportación CSV conjunta en un ZIP con un archivo para cada registro.
 - Sección de estadísticas.
 - Sección Mis campos para configurar establecimientos y operarios.
 - Datos demostrativos para recorrer las secciones todavía no operativas.
@@ -129,7 +130,7 @@ https://www.argentina.gob.ar/sites/default/files/directrcesfrutihorticolas.pdf
 
 ### Registro 1 — Información general
 
-Es una ficha única por cada RENSPA. Incluye los datos generales del establecimiento y dos tablas de Datos adicionales: producción y asociación; comercialización e infraestructura.
+Es una ficha única por cada RENSPA. La carga el administrador desde Mis campos y no el operario por WhatsApp. Incluye los datos generales del establecimiento y dos tablas de Datos adicionales: producción y asociación; comercialización e infraestructura.
 
 ### Registro 2 — Aplicación de fitosanitarios en material vegetal de inicio
 
@@ -177,7 +178,9 @@ Todos los registros incorporan como metadatos internos la fecha de carga, el ope
 - Columnas adaptadas a cada registro.
 - Filas vacías para conservar una apariencia de planilla.
 - Filtros por fecha, cultivo, responsable y establecimiento cuando corresponden.
-- Descarga en CSV o PDF.
+- Exportación obligatoria por establecimiento: el PDF incorpora primero el Registro 1 y el CSV entrega ambos registros dentro de un ZIP.
+- Alta validada: el establecimiento sólo se guarda cuando su Registro 1 está completo.
+- En la exportación solamente se exige elegir el establecimiento; la ficha ya validada se reutiliza automáticamente.
 
 ### Estadísticas
 
@@ -188,9 +191,9 @@ Todos los registros incorporan como metadatos internos la fecha de carga, el ope
 
 ### Mis campos
 
-- Alta de establecimientos con su RENSPA y ubicación.
+- Alta y edición de la ficha completa del Registro 1 por establecimiento y RENSPA. Si un dato no aplica, se consigna `No corresponde`, `Ninguna` o `No`, según el campo.
 - Alta de operarios con su teléfono de WhatsApp.
-- Visualización de la ficha demostrativa del Registro 1.
+- Vista previa de la ficha del Registro 1 seleccionada.
 - Actividades y cultivos recientes.
 
 ## Arquitectura
@@ -231,7 +234,7 @@ Next.js / AgroVoz
 
 - `applications`: mensajes recibidos, transcripción, estado y campos interpretados.
 - `register_6_applications`: filas confirmadas del Registro 6.
-- `establishments`: nombre del establecimiento y RENSPA asociado.
+- `establishments`: ficha maestra del Registro 1, incluyendo nombre, RENSPA, responsables, producción y comercialización.
 - `operators`: nombre del operario y teléfono asociado.
 - `whatsapp_sessions`: etapa actual de cada conversación de WhatsApp.
 - `audit_events`: eventos de interpretación, error y aprobación.
@@ -246,6 +249,7 @@ Crear un proyecto en Supabase y ejecutar en SQL Editor, en este orden:
 1. `supabase/migrations/001_initial.sql`
 2. `supabase/migrations/002_senasa_registers.sql`
 3. `supabase/migrations/003_guided_whatsapp_flow.sql`
+4. `supabase/migrations/004_establishment_register_1.sql`
 
 ### 2. Variables de entorno
 
@@ -307,7 +311,7 @@ Reiniciar Next.js después de modificar `.env.local`.
 
 Antes de presentar:
 
-1. Confirmar que las tres migraciones estén aplicadas.
+1. Confirmar que las cuatro migraciones estén aplicadas.
 2. Iniciar la app con `npm.cmd run dev`.
 3. Iniciar ngrok y verificar que la URL coincida en Twilio y `.env.local`.
 4. Verificar que el teléfono de la demostración haya enviado el código `join ...` del Sandbox.
@@ -333,8 +337,8 @@ Usar nombres ficticios de productos y sustancias durante una demostración públ
 6. **Automatización:** mostrar la confirmación inmediata de WhatsApp y explicar que la transcripción ocurre en segundo plano.
 7. **Revisión:** actualizar la bandeja, abrir el mensaje, reproducir el audio y recorrer los campos completados.
 8. **Control humano:** corregir un campo si se quiere demostrar la edición y presionar Confirmar Registro 6.
-9. **Resultado:** abrir Planillas, filtrar por RENSPA y mostrar la nueva fila.
-10. **Cierre:** descargar CSV o PDF y mostrar Estadísticas.
+9. **Resultado:** abrir Planillas, filtrar por establecimiento y mostrar la nueva fila.
+10. **Cierre:** descargar el PDF combinado —Registro 1 seguido del Registro 6— o el ZIP de CSV y mostrar Estadísticas.
 
 ## Pitch sugerido de 60 a 90 segundos
 

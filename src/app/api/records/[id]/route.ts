@@ -13,6 +13,7 @@ const updateSchema = z.object({
   observations: z.string().nullable().optional(), transcript: z.string().nullable().optional(), confidence: z.number().min(0).max(1).nullable().optional(),
   record_type: z.literal(6).nullable().optional(), application_date: z.string().date().nullable().optional(),
   estimated_harvest_date: z.string().date().nullable().optional(),
+  establishment_id: z.string().uuid().nullable().optional(),
 }).strict();
 
 const requiredForApproval: [string, string][] = [

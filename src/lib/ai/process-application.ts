@@ -31,7 +31,9 @@ export async function processApplication(applicationId: string, options?: { tran
       issue: extracted.issue ?? application.issue, product_name: extracted.product_name ?? application.product_name,
       active_ingredient: extracted.active_ingredient ?? application.active_ingredient, applied_dose: extracted.applied_dose ?? application.applied_dose,
       estimated_harvest_date: extracted.estimated_harvest_date ?? application.estimated_harvest_date, machine: extracted.machine ?? application.machine,
-      weather: extracted.weather ?? application.weather, observations: extracted.observations ?? application.observations, confidence: extracted.confidence,
+      weather: extracted.weather ?? application.weather,
+      observations: extracted.observations ?? extracted.weather ?? application.observations ?? application.weather ?? "Ninguna",
+      confidence: extracted.confidence,
       status: "pendiente_revision",
     };
     const { data: updated, error: updateError } = await supabase.from("applications").update(updates).eq("id", applicationId).select("*").single();
