@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AgroVoz | Registros desde WhatsApp",
-  description: "Recepción y revisión de registros de aplicaciones fitosanitarias para Córdoba.",
+  title: "AgroVoz | Registros BPA por voz",
+  description: "Recepción, revisión y planillas SENASA para registros agrícolas desde WhatsApp.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

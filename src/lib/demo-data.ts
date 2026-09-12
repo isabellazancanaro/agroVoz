@@ -28,6 +28,9 @@ export const demoRecords: ApplicationRecord[] = [
     machine: "Mochila pulverizadora",
     weather: "Sin viento",
     observations: "Registro de demostración con sustancia inerte.",
-    confidence: 0.82
+    confidence: 0.82,
+    record_type: 6,
+    application_date: "2026-09-12",
+    estimated_harvest_date: "2026-09-19"
   }
 ];
